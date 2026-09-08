@@ -20,10 +20,19 @@ concurrency:
     format('{0}-{1}', github.workflow, github.event.pull_request.number || github.ref) }}
   cancel-in-progress: true
 
+# Least-privilege default; caller jobs below elevate only as needed.
+# Reusable-workflow calls inherit *only* what their `permissions:` grant,
+# so test stays read-only while release gets the publish scopes it needs.
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test
     uses: ./.github/workflows/test.yml
+    permissions:
+      contents: read # checkout
+      actions: write # upload/download mage, binary and frontend artifacts + cache
     secrets: inherit
 
   release:
@@ -32,4 +41,12 @@ jobs:
     uses: ./.github/workflows/release.yml
     needs:
       - test
+    permissions:
+      # create-release (tag-only) drafts GitHub releases via
+      # softprops/action-gh-release, which needs contents: write.
+      contents: write
+      # docker job pushes unstable/versioned images to GHCR with GITHUB_TOKEN.
+      packages: write
+      # upload/download build artifacts shared with the test workflow + cache.
+      actions: write
     secrets: inherit
