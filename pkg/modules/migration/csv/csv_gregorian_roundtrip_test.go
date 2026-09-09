@@ -57,6 +57,6 @@ func TestCSVGregorianDateRoundTrip(t *testing.T) {
 
 	for _, s := range []string{preview.Tasks[0].DueDate, task.DueDate.Format("2006-01-02")} {
 		assert.NotContains(t, s, "۱۴۰")
-		assert.True(t, strings.IndexFunc(s, func(r rune) bool { return r >= '۰' && r <= '۹' }) == -1)
+		assert.Equal(t, -1, strings.IndexFunc(s, func(r rune) bool { return r >= '۰' && r <= '۹' }))
 	}
 }

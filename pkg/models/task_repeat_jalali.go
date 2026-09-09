@@ -160,9 +160,9 @@ func floorMod(a, b int) int {
 	return a - floorDiv(a, b)*b
 }
 
-// addJalaliMonthsToDate steps d forward by months Jalali months in loc's
+// addJalaliMonthToDate steps d forward by one Jalali month in loc's
 // wall-clock, clamping the day to the target month instead of overflowing.
-func addJalaliMonthsToDate(d time.Time, months int, loc *time.Location) time.Time {
+func addJalaliMonthToDate(d time.Time, loc *time.Location) time.Time {
 	if loc == nil {
 		loc = config.GetTimeZone()
 	}
@@ -171,7 +171,7 @@ func addJalaliMonthsToDate(d time.Time, months int, loc *time.Location) time.Tim
 	if !ok {
 		return d
 	}
-	total := jy*12 + (jm - 1) + months
+	total := jy*12 + (jm - 1) + 1
 	njy := floorDiv(total, 12)
 	njm := floorMod(total, 12) + 1
 	if l := jalaliMonthLength(njy, njm); jd > l {
@@ -184,8 +184,8 @@ func addJalaliMonthsToDate(d time.Time, months int, loc *time.Location) time.Tim
 	return time.Date(gy, gm, gd, ld.Hour(), ld.Minute(), ld.Second(), ld.Nanosecond(), loc)
 }
 
-// addJalaliYearsToDate steps d forward by years Jalali years, clamping Esfand 30 to 29 in common years.
-func addJalaliYearsToDate(d time.Time, years int, loc *time.Location) time.Time {
+// addJalaliYearToDate steps d forward by one Jalali year, clamping Esfand 30 to 29 in common years.
+func addJalaliYearToDate(d time.Time, loc *time.Location) time.Time {
 	if loc == nil {
 		loc = config.GetTimeZone()
 	}
@@ -194,7 +194,7 @@ func addJalaliYearsToDate(d time.Time, years int, loc *time.Location) time.Time 
 	if !ok {
 		return d
 	}
-	njy := jy + years
+	njy := jy + 1
 	if l := jalaliMonthLength(njy, jm); jd > l {
 		jd = l
 	}
@@ -222,27 +222,27 @@ func setTaskDatesJalaliMonthRepeat(oldTask, newTask *Task, loc *time.Location) {
 		loc = config.GetTimeZone()
 	}
 	if !oldTask.DueDate.IsZero() {
-		newTask.DueDate = addJalaliMonthsToDate(oldTask.DueDate, 1, loc)
+		newTask.DueDate = addJalaliMonthToDate(oldTask.DueDate, loc)
 	}
 
 	newTask.Reminders = oldTask.Reminders
 	if len(oldTask.Reminders) > 0 {
 		for in, r := range oldTask.Reminders {
-			newTask.Reminders[in].Reminder = addJalaliMonthsToDate(r.Reminder, 1, loc)
+			newTask.Reminders[in].Reminder = addJalaliMonthToDate(r.Reminder, loc)
 		}
 	}
 
 	if !oldTask.StartDate.IsZero() && !oldTask.EndDate.IsZero() {
 		diff := oldTask.EndDate.Sub(oldTask.StartDate)
-		newTask.StartDate = addJalaliMonthsToDate(oldTask.StartDate, 1, loc)
+		newTask.StartDate = addJalaliMonthToDate(oldTask.StartDate, loc)
 		newTask.EndDate = newTask.StartDate.Add(diff)
 	} else {
 		if !oldTask.StartDate.IsZero() {
-			newTask.StartDate = addJalaliMonthsToDate(oldTask.StartDate, 1, loc)
+			newTask.StartDate = addJalaliMonthToDate(oldTask.StartDate, loc)
 		}
 
 		if !oldTask.EndDate.IsZero() {
-			newTask.EndDate = addJalaliMonthsToDate(oldTask.EndDate, 1, loc)
+			newTask.EndDate = addJalaliMonthToDate(oldTask.EndDate, loc)
 		}
 	}
 
@@ -254,27 +254,27 @@ func setTaskDatesJalaliYearRepeat(oldTask, newTask *Task, loc *time.Location) {
 		loc = config.GetTimeZone()
 	}
 	if !oldTask.DueDate.IsZero() {
-		newTask.DueDate = addJalaliYearsToDate(oldTask.DueDate, 1, loc)
+		newTask.DueDate = addJalaliYearToDate(oldTask.DueDate, loc)
 	}
 
 	newTask.Reminders = oldTask.Reminders
 	if len(oldTask.Reminders) > 0 {
 		for in, r := range oldTask.Reminders {
-			newTask.Reminders[in].Reminder = addJalaliYearsToDate(r.Reminder, 1, loc)
+			newTask.Reminders[in].Reminder = addJalaliYearToDate(r.Reminder, loc)
 		}
 	}
 
 	if !oldTask.StartDate.IsZero() && !oldTask.EndDate.IsZero() {
 		diff := oldTask.EndDate.Sub(oldTask.StartDate)
-		newTask.StartDate = addJalaliYearsToDate(oldTask.StartDate, 1, loc)
+		newTask.StartDate = addJalaliYearToDate(oldTask.StartDate, loc)
 		newTask.EndDate = newTask.StartDate.Add(diff)
 	} else {
 		if !oldTask.StartDate.IsZero() {
-			newTask.StartDate = addJalaliYearsToDate(oldTask.StartDate, 1, loc)
+			newTask.StartDate = addJalaliYearToDate(oldTask.StartDate, loc)
 		}
 
 		if !oldTask.EndDate.IsZero() {
-			newTask.EndDate = addJalaliYearsToDate(oldTask.EndDate, 1, loc)
+			newTask.EndDate = addJalaliYearToDate(oldTask.EndDate, loc)
 		}
 	}
 

@@ -118,14 +118,14 @@ func TestAddJalaliMonthsToDate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.True(t, addJalaliMonthsToDate(tt.in, 1, utc).Equal(tt.want),
-				"got %s, want %s", addJalaliMonthsToDate(tt.in, 1, utc), tt.want)
+			assert.True(t, addJalaliMonthToDate(tt.in, utc).Equal(tt.want),
+				"got %s, want %s", addJalaliMonthToDate(tt.in, utc), tt.want)
 		})
 	}
 
 	t.Run("nil loc falls back to service timezone", func(t *testing.T) {
 		in := at(2025, time.September, 22, 12, 0, 0)
-		assert.True(t, addJalaliMonthsToDate(in, 1, nil).Equal(addJalaliMonthsToDate(in, 1, config.GetTimeZone())))
+		assert.True(t, addJalaliMonthToDate(in, nil).Equal(addJalaliMonthToDate(in, config.GetTimeZone())))
 	})
 }
 
@@ -159,8 +159,8 @@ func TestAddJalaliYearsToDate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.True(t, addJalaliYearsToDate(tt.in, 1, utc).Equal(tt.want),
-				"got %s, want %s", addJalaliYearsToDate(tt.in, 1, utc), tt.want)
+			assert.True(t, addJalaliYearToDate(tt.in, utc).Equal(tt.want),
+				"got %s, want %s", addJalaliYearToDate(tt.in, utc), tt.want)
 		})
 	}
 }
