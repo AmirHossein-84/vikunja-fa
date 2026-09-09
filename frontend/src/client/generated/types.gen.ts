@@ -2025,7 +2025,7 @@ export type Task = {
      */
     repeat_after?: number;
     /**
-     * How the task repeats when marked done: 0 = after repeat_after seconds, 1 = monthly (ignores repeat_after), 2 = from the current date rather than the last set date.
+     * How the task repeats when marked done: 0 = after repeat_after seconds, 1 = monthly (ignores repeat_after), 2 = from the current date rather than the last set date, 3 = Jalali month with clamping ignoring repeat_after, 4 = Jalali year with clamping ignoring repeat_after.
      */
     repeat_mode?: number;
     start_date?: string;
@@ -2362,7 +2362,7 @@ export type TaskReadOneBody = {
      */
     repeat_after?: number;
     /**
-     * How the task repeats when marked done: 0 = after repeat_after seconds, 1 = monthly (ignores repeat_after), 2 = from the current date rather than the last set date.
+     * How the task repeats when marked done: 0 = after repeat_after seconds, 1 = monthly (ignores repeat_after), 2 = from the current date rather than the last set date, 3 = Jalali month with clamping ignoring repeat_after, 4 = Jalali year with clamping ignoring repeat_after.
      */
     repeat_mode?: number;
     start_date?: string;
@@ -4131,7 +4131,7 @@ export type TaskWritable = {
      */
     repeat_after?: number;
     /**
-     * How the task repeats when marked done: 0 = after repeat_after seconds, 1 = monthly (ignores repeat_after), 2 = from the current date rather than the last set date.
+     * How the task repeats when marked done: 0 = after repeat_after seconds, 1 = monthly (ignores repeat_after), 2 = from the current date rather than the last set date, 3 = Jalali month with clamping ignoring repeat_after, 4 = Jalali year with clamping ignoring repeat_after.
      */
     repeat_mode?: number;
     start_date?: string;
@@ -4232,7 +4232,7 @@ export type TaskReadOneBodyWritable = {
      */
     repeat_after?: number;
     /**
-     * How the task repeats when marked done: 0 = after repeat_after seconds, 1 = monthly (ignores repeat_after), 2 = from the current date rather than the last set date.
+     * How the task repeats when marked done: 0 = after repeat_after seconds, 1 = monthly (ignores repeat_after), 2 = from the current date rather than the last set date, 3 = Jalali month with clamping ignoring repeat_after, 4 = Jalali year with clamping ignoring repeat_after.
      */
     repeat_mode?: number;
     start_date?: string;
