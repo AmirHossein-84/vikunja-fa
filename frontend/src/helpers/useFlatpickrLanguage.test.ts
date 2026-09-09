@@ -2,7 +2,7 @@ import {beforeEach, describe, expect, it} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
 
 import {useAuthStore} from '@/stores/auth'
-import {useFlatpickrLanguage} from './useFlatpickrLanguage'
+import {useFlatpickrLanguage, resolveFlatpickrLocales} from './useFlatpickrLanguage'
 
 function setLanguageWeekStart(language: string, weekStart: number) {
 	useAuthStore().setUserSettings({language, weekStart} as never)
@@ -34,5 +34,21 @@ describe('useFlatpickrLanguage', () => {
 	it('leaves german on Monday by default', () => {
 		setLanguageWeekStart('de-DE', 0)
 		expect(useFlatpickrLanguage().value.firstDayOfWeek).toBe(1)
+	})
+})
+
+describe('resolveFlatpickrLocales', () => {
+	const english = {firstDayOfWeek: 0, weekdays: {shorthand: ['Su']}}
+	const map = {en: english, fa: {firstDayOfWeek: 6}, default: english}
+
+	it('uses the map itself when it exposes named locales (dev/test bundling)', () => {
+		expect(resolveFlatpickrLocales(map)).toBe(map)
+	})
+
+	it('unwraps the namespace-wrapped map (production bundling)', () => {
+		// rolldown exposes the UMD module as {default: <locale map>} without
+		// unwrapping: `en` is missing at the top level, which used to leave
+		// the resolved locale empty and render a broken month grid.
+		expect(resolveFlatpickrLocales({default: map})).toBe(map)
 	})
 })
