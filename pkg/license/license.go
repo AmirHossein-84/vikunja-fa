@@ -152,12 +152,16 @@ func Init() {
 		log.Fatalf("Could not initialize license system: %s", err)
 	}
 
-	// No license key configured — free mode. Clear any state persisted by a
-	// previous run (e.g. via Redis) so a removed key can't leave stale
-	// Licensed=true entitlements behind.
+	// No license key configured — local dev unlock: enable every Pro feature
+	// instead of degrading to free mode. A configured key still follows the
+	// normal server validation path below.
 	if key == "" {
-		log.Debugf("No license key configured.")
-		degradeToFree("No license key configured.")
+		log.Infof("No license key configured — enabling all Pro features for local development.")
+		applyResponse(&Response{
+			Valid:     true,
+			Features:  []Feature{FeatureAdminPanel, FeatureTimeTracking, FeatureAuditLogs},
+			ExpiresAt: time.Now().Add(100 * 365 * 24 * time.Hour),
+		})
 		return
 	}
 
