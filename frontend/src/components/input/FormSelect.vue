@@ -66,6 +66,7 @@ function handleChange(event: Event) {
 </script>
 
 <template>
+	<!-- Single root (error inside the wrapper) so runtime directives like v-cy apply -->
 	<div :class="wrapperClasses">
 		<select
 			:id="selectId"
@@ -87,15 +88,15 @@ function handleChange(event: Event) {
 			</template>
 			<slot v-else />
 		</select>
+		<p
+			v-if="error"
+			:id="errorId"
+			class="help is-danger"
+			role="alert"
+		>
+			{{ error }}
+		</p>
 	</div>
-	<p
-		v-if="error"
-		:id="errorId"
-		class="help is-danger"
-		role="alert"
-	>
-		{{ error }}
-	</p>
 </template>
 
 <style lang="scss" scoped>

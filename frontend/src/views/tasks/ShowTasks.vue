@@ -42,7 +42,10 @@
 			v-if="!showAll"
 			class="show-tasks-options"
 		>
-			<DatepickerWithRange @update:modelValue="setDate">
+			<DatepickerWithRange
+				:model-value="{dateFrom: props.dateFrom ?? null, dateTo: props.dateTo ?? null}"
+				@update:modelValue="setDate"
+			>
 				<template #trigger="{toggle}">
 					<XButton
 						variant="primary"
@@ -204,19 +207,22 @@ const userAuthenticated = computed(() => authStore.authenticated)
 const loading = computed(() => taskStore.isLoading || taskCollectionService.value.loading)
 const filterIdUsedOnOverview = computed(() => authStore.settings?.frontendSettings?.filterIdUsedOnOverview)
 
-interface dateStrings {
-	dateFrom: string,
-	dateTo: string,
+interface dateRangeSelection {
+	dateFrom: Date | string | null,
+	dateTo: Date | string | null,
 }
 
-function setDate(dates: dateStrings) {
+function setDate(dates: dateRangeSelection) {
 	// URLs keep datemath verbatim so shared links stay dynamic; loadPendingTasks
 	// below resolves fa week/month/year to explicit bounds fresh on each load.
+	// Dates are normalized to ISO strings for the query.
+	const toQueryValue = (d: Date | string | null | undefined) =>
+		d instanceof Date ? d.toISOString() : d ?? undefined
 	router.push({
 		name: route.name as string,
 		query: {
-			from: dates.dateFrom ?? props.dateFrom,
-			to: dates.dateTo ?? props.dateTo,
+			from: toQueryValue(dates.dateFrom) ?? toQueryValue(props.dateFrom),
+			to: toQueryValue(dates.dateTo) ?? toQueryValue(props.dateTo),
 			showOverdue: props.showOverdue ? 'true' : 'false',
 			showNulls: props.showNulls ? 'true' : 'false',
 		},
