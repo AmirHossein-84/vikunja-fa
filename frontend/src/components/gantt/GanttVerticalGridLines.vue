@@ -9,9 +9,9 @@
 			<line
 				v-for="(date, index) in timelineData"
 				:key="date.toISOString()"
-				:x1="index * dayWidthPixels"
+				:x1="lineX(index)"
 				:y1="0"
-				:x2="index * dayWidthPixels"
+				:x2="lineX(index)"
 				:y2="height"
 				stroke="var(--grey-400)"
 				stroke-width="0.5"
@@ -22,12 +22,23 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import {useGanttDirection} from '@/composables/useGanttDirection'
+
+const props = defineProps<{
 	timelineData: Date[]
 	totalWidth: number
 	height: number
 	dayWidthPixels: number
 }>()
+
+const {isRtl} = useGanttDirection()
+
+// Mirror day lines with the bars in rtl locales so the grid stays aligned
+// with the day columns and bars.
+function lineX(index: number): number {
+	const x = index * props.dayWidthPixels
+	return isRtl.value ? props.totalWidth - x : x
+}
 </script>
 
 <style scoped lang="scss">

@@ -16,13 +16,15 @@
 			:timeline-end="dateToDate"
 			:on-update="(id, start, end) => emit('updateTask', id, start, end)"
 		>
-			<!-- Gradient definitions for partial-date bars -->
+			<!-- Gradient definitions for partial-date bars.
+				The known-date side is solid, the synthetic side fades out.
+				In rtl locales that side is mirrored, so the gradient vector flips. -->
 			<defs v-if="bar.meta?.dateType === 'startOnly' || bar.meta?.dateType === 'endOnly'">
 				<linearGradient
 					:id="`gradient-${bar.id}`"
-					x1="0"
+					:x1="isRtl ? 1 : 0"
 					y1="0"
-					x2="1"
+					:x2="isRtl ? 0 : 1"
 					y2="0"
 				>
 					<stop
@@ -111,9 +113,9 @@
 				/>
 			</g>
 
-			<!-- Left resize handle (hidden for endOnly bars) -->
+			<!-- Left resize handle (hidden for the dateless side) -->
 			<rect
-				v-if="bar.meta?.dateType !== 'endOnly'"
+				v-if="bar.meta?.dateType !== (isRtl ? 'startOnly' : 'endOnly')"
 				:x="getBarX(bar) - RESIZE_HANDLE_OFFSET"
 				:y="4"
 				:width="6"
@@ -125,12 +127,12 @@
 				class="gantt-resize-handle gantt-resize-left"
 				role="button"
 				:aria-label="$t('project.gantt.resizeStartDate', { task: bar.meta?.label || bar.id })"
-				@pointerdown="startResize(bar, 'start', $event)"
+				@pointerdown="startResize(bar, isRtl ? 'end' : 'start', $event)"
 			/>
 
-			<!-- Right resize handle (hidden for startOnly bars) -->
+			<!-- Right resize handle (hidden for the dateless side) -->
 			<rect
-				v-if="bar.meta?.dateType !== 'startOnly'"
+				v-if="bar.meta?.dateType !== (isRtl ? 'endOnly' : 'startOnly')"
 				:x="getBarX(bar) + getBarWidth(bar) - RESIZE_HANDLE_OFFSET"
 				:y="4"
 				:width="6"
@@ -142,7 +144,7 @@
 				class="gantt-resize-handle gantt-resize-right"
 				role="button"
 				:aria-label="$t('project.gantt.resizeEndDate', { task: bar.meta?.label || bar.id })"
-				@pointerdown="startResize(bar, 'end', $event)"
+				@pointerdown="startResize(bar, isRtl ? 'start' : 'end', $event)"
 			/>
 
 			<!-- Task label with clipping -->
@@ -151,7 +153,7 @@
 					<rect
 						:x="getBarX(bar) + 2"
 						:y="4"
-						:width="getBarWidth(bar) - 4"
+						:width="Math.max(0, getBarWidth(bar) - 4)"
 						:height="32"
 						:rx="4"
 					/>
@@ -175,7 +177,7 @@
 		<g
 			v-if="isParent && bars[0]"
 			class="gantt-collapse-toggle"
-			:transform="`translate(${Math.max(0, getBarX(bars[0]) - 14)}, 14)`"
+			:transform="`translate(${isRtl && bars[0] ? getBarX(bars[0]) + getBarWidth(bars[0]) : Math.max(0, getBarX(bars[0]) - 14)}, 14)`"
 			role="button"
 			:aria-label="isCollapsed
 				? $t('project.gantt.expandGroup', { task: bars[0]?.meta?.label || '' })
@@ -216,6 +218,7 @@ import {MILLISECONDS_A_DAY} from '@/constants/date'
 import {roundToNaturalDayBoundary} from '@/helpers/time/roundToNaturalDayBoundary'
 import {formatDate} from '@/helpers/time/formatDate'
 import {useJalaliCalendar} from '@/composables/useJalaliCalendar'
+import {useGanttDirection} from '@/composables/useGanttDirection'
 
 import GanttBarPrimitive from './primitives/GanttBarPrimitive.vue'
 
@@ -251,6 +254,7 @@ const emit = defineEmits<{
 
 const {t} = useI18n({useScope: 'global'})
 const {isJalali} = useJalaliCalendar()
+const {isRtl} = useGanttDirection()
 
 const RESIZE_HANDLE_OFFSET = 3
 
@@ -270,10 +274,16 @@ function addDays(dateOrValue: Date | string | number, days: number): Date {
 
 const isRowFocused = computed(() => props.focusedRow === props.rowId)
 
-function computeBarX(startDate: Date) {
-	const daysDiff = dayjs(startDate).diff(dayjs(props.dateFromDate), 'day')
+function datePointX(date: Date) {
+	const daysDiff = dayjs(date).diff(dayjs(props.dateFromDate), 'day')
 	const x = daysDiff * props.dayWidthPixels
-	return x
+	// Mirror the time axis in rtl locales: earliest dates sit at the right.
+	return isRtl.value ? props.totalWidth - x : x
+}
+
+// Left edge of a bar spanning [startDate, startDate + width].
+function barLeftX(startDate: Date, width: number) {
+	return datePointX(startDate) - (isRtl.value ? width : 0)
 }
 
 function getDaysDifference(startDate: Date, endDate: Date): number {
@@ -289,44 +299,72 @@ function computeBarWidth(bar: GanttBarModel) {
 	return width
 }
 
-const originalEndX = computed(() => props.dragState?.originalEnd 
-	? computeBarX(props.dragState.originalEnd) 
+const originalEndX = computed(() => props.dragState?.originalEnd
+	? datePointX(props.dragState.originalEnd)
 	: 0)
-const originalStartX = computed(() => props.dragState?.originalStart 
-	? computeBarX(props.dragState.originalStart) 
+const originalStartX = computed(() => props.dragState?.originalStart
+	? datePointX(props.dragState.originalStart)
 	: 0)
 
 const getBarX = computed(() => (bar: GanttBarModel) => {
 	if (props.isDragging && props.dragState?.barId === bar.id) {
-		const offset = props.dragState.currentDays * props.dayWidthPixels
-		return originalStartX.value + offset
+		// currentDays is a date delta (later dates in rtl mean visually left),
+		// while the pointer offset below is in raw pixels: convert back so the
+		// bar follows the pointer instead of mirroring it.
+		const offset = props.dragState.currentDays * props.dayWidthPixels * (isRtl.value ? -1 : 1)
+		const left = originalStartX.value + offset
+		// originalStartX is the mirrored start point; the displayed left edge
+		// sits one bar width to its left in rtl.
+		return isRtl.value ? left - computeBarWidth(bar) : left
 	}
 
 	if (props.isResizing && props.dragState?.barId === bar.id && props.dragState.edge === 'start') {
+		// The end stays fixed while the start moves: in rtl the fixed end is
+		// the bar's left edge.
+		if (isRtl.value) {
+			return originalEndX.value
+		}
 		const newStart = addDays(props.dragState.originalStart, props.dragState.currentDays)
-		return computeBarX(newStart)
+		return datePointX(newStart)
 	}
-	return computeBarX(bar.start)
+	if (props.isResizing && props.dragState?.barId === bar.id) {
+		// The start stays fixed while the end moves: in rtl the moving end is
+		// the bar's left edge.
+		const newEnd = addDays(props.dragState.originalEnd, props.dragState.currentDays)
+		return isRtl.value ? datePointX(newEnd) : originalStartX.value
+	}
+	return barLeftX(bar.start, computeBarWidth(bar))
 })
 
 const getBarWidth = computed(() => (bar: GanttBarModel) => {
 	if (props.isResizing && props.dragState?.barId === bar.id) {
 		if (props.dragState.edge === 'start') {
 			const newStart = addDays(props.dragState.originalStart, props.dragState.currentDays)
-			const newStartX = computeBarX(newStart)
-			return Math.max(0, originalEndX.value - newStartX)
+			const newStartX = datePointX(newStart)
+			return isRtl.value
+				? Math.max(0, newStartX - originalEndX.value)
+				: Math.max(0, originalEndX.value - newStartX)
 		} else {
 			const newEnd = addDays(props.dragState.originalEnd, props.dragState.currentDays)
-			const newEndX = computeBarX(newEnd)
-			return Math.max(0, newEndX - originalStartX.value)
+			const newEndX = datePointX(newEnd)
+			return isRtl.value
+				? Math.max(0, originalStartX.value - newEndX)
+				: Math.max(0, newEndX - originalStartX.value)
 		}
 	}
 	return computeBarWidth(bar)
 })
 
 const getBarTextX = computed(() => (bar: GanttBarModel) => {
+	// text-anchor start/end flips automatically with the text direction, so
+	// only the x position needs mirroring here.
 	if (bar.meta?.dateType === 'endOnly') {
-		return getBarX.value(bar) + getBarWidth.value(bar) - 8
+		return isRtl.value
+			? getBarX.value(bar) + 8
+			: getBarX.value(bar) + getBarWidth.value(bar) - 8
+	}
+	if (isRtl.value) {
+		return Math.min(getBarX.value(bar) + getBarWidth.value(bar) - 8, props.totalWidth - 8)
 	}
 	// When the bar starts before the visible range, clamp text to the left edge
 	// so the title remains visible within the visible portion of the bar.

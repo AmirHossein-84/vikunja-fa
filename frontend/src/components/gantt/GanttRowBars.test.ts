@@ -94,17 +94,18 @@ describe('GanttRowBars Jalali aria', () => {
 		expect(aria).toContain(END.toLocaleDateString())
 	})
 
-	it('keeps bar positioning identical across locales (no pixel shift)', () => {
+	it('mirrors bar positioning in rtl locales (same width, mirrored x)', () => {
 		setLocaleAndTimezone('en', 'UTC')
 		const enWrapper = mountBars([makeBar()])
 		const enBar = enWrapper.find('.gantt-bar')
-		const enX = enBar.attributes('x')
+		const enX = Number(enBar.attributes('x'))
 		const enWidth = enBar.attributes('width')
 
 		setLocaleAndTimezone('fa-IR', 'Asia/Tehran')
 		const faWrapper = mountBars([makeBar()])
 		const faBar = faWrapper.find('.gantt-bar')
-		expect(faBar.attributes('x')).toBe(enX)
+		// totalWidth is 500 in mountBars: mirrored left edge = 500 - x - width
+		expect(faBar.attributes('x')).toBe(String(500 - enX - Number(enWidth)))
 		expect(faBar.attributes('width')).toBe(enWidth)
 	})
 

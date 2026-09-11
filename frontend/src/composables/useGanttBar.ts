@@ -1,5 +1,7 @@
 import { ref } from 'vue'
 
+import {useGanttDirection} from '@/composables/useGanttDirection'
+
 export type GanttBarDateType = 'both' | 'startOnly' | 'endOnly'
 
 export interface GanttBarModel {
@@ -29,6 +31,7 @@ export function useGanttBar(options: UseGanttBarOptions) {
 	const dragging = ref(false)
 	const selected = ref(false)
 	const focused = ref(false)
+	const {isRtl} = useGanttDirection()
 
 	function onFocus() {
 		focused.value = true
@@ -62,33 +65,42 @@ export function useGanttBar(options: UseGanttBarOptions) {
 	}
 
 	function onKeyDown(e: KeyboardEvent) {
+		// In rtl locales the timeline runs right-to-left, so Left means later
+		// dates and Right means earlier ones: swap the arrows up front and the
+		// edge-aware logic below keeps working unchanged.
+		const code = e.code === 'ArrowLeft'
+			? (isRtl.value ? 'ArrowRight' : 'ArrowLeft')
+			: e.code === 'ArrowRight'
+				? (isRtl.value ? 'ArrowLeft' : 'ArrowRight')
+				: e.code
+
 		// task expanding
 		if (e.shiftKey) {
-			if (e.code === 'ArrowLeft') {
+			if (code === 'ArrowLeft') {
 				e.preventDefault()
 				changeSize('left', 1)
 			}
-			if (e.code === 'ArrowRight') {
+			if (code === 'ArrowRight') {
 				e.preventDefault()
 				changeSize('right', 1)
 			}
 		}
 		// task shrinking
 		else if (e.ctrlKey) {
-			if (e.code === 'ArrowLeft') {
+			if (code === 'ArrowLeft') {
 				e.preventDefault()
 				changeSize('left', -1)
 			}
-			if (e.code === 'ArrowRight') {
+			if (code === 'ArrowRight') {
 				e.preventDefault()
 				changeSize('right', -1)
 			}
 		}
 		// task movement
-		else if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+		else if (code === 'ArrowLeft' || code === 'ArrowRight') {
 			e.preventDefault()
 
-			const dir = e.code === 'ArrowRight' ? 1 : -1
+			const dir = code === 'ArrowRight' ? 1 : -1
 			const newStart = new Date(options.model.start)
 			newStart.setDate(newStart.getDate() + dir)
 			const newEnd = new Date(options.model.end)

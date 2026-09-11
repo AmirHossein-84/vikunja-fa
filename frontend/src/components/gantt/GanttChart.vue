@@ -113,6 +113,7 @@ import Loading from '@/components/misc/Loading.vue'
 
 import {MILLISECONDS_A_DAY} from '@/constants/date'
 import {roundToNaturalDayBoundary} from '@/helpers/time/roundToNaturalDayBoundary'
+import {useGanttDirection} from '@/composables/useGanttDirection'
 
 const props = defineProps<{
 	isLoading: boolean,
@@ -133,6 +134,7 @@ let resizeObserver: ResizeObserver | undefined
 const {tasks, filters} = toRefs(props)
 
 const dayjsLanguageLoading = useDayjsLanguageSync(dayjs)
+const {isRtl} = useGanttDirection()
 const ganttContainer = ref<HTMLElement | null>(null)
 const ganttChartBodyRef = ref<InstanceType<typeof GanttChartBody> | null>(null)
 const router = useRouter()
@@ -412,20 +414,25 @@ const barPositions = computed(() => {
 	ganttBars.value.forEach((rowBars, rowIndex) => {
 		for (const bar of rowBars) {
 			const taskId = Number(bar.id)
-			let x = computeBarX(bar.start)
+			let x = computeBarX(bar.start, computeBarWidth(bar))
 			let width = computeBarWidth(bar)
 			const y = rowIndex * ROW_HEIGHT + ROW_HEIGHT / 2
 
-			// Apply drag/resize offset for the active bar
+			// Apply drag/resize offset for the active bar. currentDays is a date
+			// delta; convert back to raw pixels so arrows follow the pointer.
 			if (ds && bar.id === ds.barId && dragPixelOffset !== 0) {
+				const pixelOffset = dragPixelOffset * (isRtl.value ? -1 : 1)
 				if (isDragging.value) {
-					x += dragPixelOffset
+					x += pixelOffset
 				} else if (isResizing.value) {
-					if (ds.edge === 'start') {
-						x += dragPixelOffset
-						width -= dragPixelOffset
+					// In rtl the date-start edge sits on the right, so the
+					// moving/static roles of the two branches swap.
+					const leftEdgeMoves = (ds.edge === 'start') !== isRtl.value
+					if (leftEdgeMoves) {
+						x += pixelOffset
+						width -= pixelOffset
 					} else {
-						width += dragPixelOffset
+						width += pixelOffset
 					}
 				}
 			}
@@ -437,12 +444,15 @@ const barPositions = computed(() => {
 	return positions
 })
 
-function computeBarX(date: Date): number {
+function computeBarX(date: Date, width = 0): number {
 	const diff = Math.ceil(
 		(roundToNaturalDayBoundary(date, true).getTime() - dateFromDate.value.getTime()) /
 		MILLISECONDS_A_DAY,
 	)
-	return diff * dayWidthPixels.value
+	const x = diff * dayWidthPixels.value
+	// Mirror the time axis in rtl locales so bars line up with their day
+	// columns: the left edge is measured from the mirrored right edge.
+	return isRtl.value ? totalWidth.value - x - width : x
 }
 
 function computeBarWidth(bar: GanttBarModel): number {
@@ -644,15 +654,16 @@ function startDrag(bar: GanttBarModel, event: PointerEvent) {
 	
 	const handleMove = (e: PointerEvent) => {
 		if (!dragState.value || !isDragging.value) return
-		
+
 		const diff = e.clientX - dragState.value.startX
-		const days = Math.round(diff / dayWidthPixels.value)
-		
+		// In rtl locales moving the pointer right means earlier dates.
+		const days = Math.round(diff / dayWidthPixels.value) * (isRtl.value ? -1 : 1)
+
 		if (days !== dragState.value.currentDays) {
 			dragState.value.currentDays = days
 		}
 	}
-	
+
 	const handleStop = () => {
 		if (dragMoveHandler) {
 			document.removeEventListener('pointermove', dragMoveHandler)
@@ -662,18 +673,18 @@ function startDrag(bar: GanttBarModel, event: PointerEvent) {
 			document.removeEventListener('pointerup', dragStopHandler)
 			dragStopHandler = null
 		}
-		
+
 		clearCursor(barElement)
-		
+
 		if (dragState.value && dragState.value.currentDays !== 0) {
 			const newStart = new Date(dragState.value.originalStart)
 			newStart.setDate(newStart.getDate() + dragState.value.currentDays)
 			const newEnd = new Date(dragState.value.originalEnd)
 			newEnd.setDate(newEnd.getDate() + dragState.value.currentDays)
-			
+
 			updateGanttTask(bar.id, newStart, newEnd)
 		}
-		
+
 		isDragging.value = false
 		dragState.value = null
 	}
@@ -706,10 +717,11 @@ function startResize(bar: GanttBarModel, edge: 'start' | 'end', event: PointerEv
 	
 	const handleMove = (e: PointerEvent) => {
 		if (!dragState.value || !isResizing.value) return
-		
+
 		const diff = e.clientX - dragState.value.startX
-		const days = Math.round(diff / dayWidthPixels.value)
-		
+		// In rtl locales moving the pointer right means earlier dates.
+		const days = Math.round(diff / dayWidthPixels.value) * (isRtl.value ? -1 : 1)
+
 		if (edge === 'start') {
 			const newStart = new Date(dragState.value.originalStart)
 			newStart.setDate(newStart.getDate() + days)
