@@ -436,7 +436,7 @@ func (n *UndoneTasksOverdueNotification) ToMail(lang string) *notifications.Mail
 		Greeting(i18n.T(lang, "notifications.greeting", n.User.GetName())).
 		Line(i18n.T(lang, "notifications.task.overdue.multiple_message")).
 		Line(overdueLine).
-		Action(i18n.T(lang, "notifications.common.actions.open_vikunja"), config.ServicePublicURL.GetString()).
+		Action(i18n.T(lang, "notifications.common.actions.open_DoiNow"), config.ServicePublicURL.GetString()).
 		Line(i18n.T(lang, "notifications.common.have_nice_day"))
 }
 
