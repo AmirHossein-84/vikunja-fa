@@ -1404,7 +1404,13 @@ h2 .button {
 	.button {
 		inline-size: 100%;
 		margin-block-end: .5rem;
-		justify-content: left;
+		justify-content: flex-start;
+
+		// The global button component keeps the icon on the left in rtl
+		// (row-reverse). In this column we mirror fully: icon at inline-start.
+		[dir="rtl"] & {
+			flex-direction: row;
+		}
 
 		&.has-light-text {
 			color: var(--white);

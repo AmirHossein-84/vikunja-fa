@@ -192,6 +192,13 @@ const monthGroups = computed(() => {
 
 			.weekday {
 				font-size: 0.8rem;
+
+				// RTL weekday names (e.g. Persian) are too long for the narrow
+				// day columns, so render them rotated instead of overlapping.
+				[dir="rtl"] & {
+					writing-mode: vertical-rl;
+					padding-block: .25rem;
+				}
 			}
 		}
 	}
