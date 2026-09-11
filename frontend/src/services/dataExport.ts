@@ -1,7 +1,7 @@
 import AbstractService from './abstractService'
 import {downloadBlob} from '../helpers/downloadBlob'
 
-const DOWNLOAD_NAME = 'vikunja-export.zip'
+const DOWNLOAD_NAME = 'doinow-export.zip'
 
 export default class DataExportService extends AbstractService {
 	request(password: string) {

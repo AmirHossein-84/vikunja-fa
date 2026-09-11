@@ -45,7 +45,7 @@ export const MIGRATORS = {
 	},
 	'vikunja-file': {
 		id: 'vikunja-file',
-		name: 'Vikunja Export',
+		name: 'DoiNow Export',
 		icon: vikunjaFileIcon,
 		isFileMigrator: true,
 	},

@@ -67,7 +67,11 @@
 							:key="i"
 						/>
 					</div>
-					<Logo class="logo" />
+					<img
+						:src="Logo"
+						alt="DoiNow"
+						class="logo"
+					>
 				</div>
 				<p>{{ $t('migrate.inProgress') }}</p>
 			</div>
@@ -135,7 +139,7 @@ export default {
 import {computed, ref, shallowReactive} from 'vue'
 import {useI18n} from 'vue-i18n'
 
-import Logo from '@/assets/logo.svg?component'
+import Logo from '@/assets/logo.png'
 import Message from '@/components/misc/Message.vue'
 import MigrationCredentialsForm from './MigrationCredentialsForm.vue'
 

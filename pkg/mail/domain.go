@@ -25,7 +25,7 @@ import (
 )
 
 // GetMailDomain returns the hostname from the configured public URL,
-// or "vikunja" as a fallback. Used for RFC 5322 compliant Message-ID
+// or "doinow" as a fallback. Used for RFC 5322 compliant Message-ID
 // and thread ID generation.
 func GetMailDomain() string {
 	publicURL := config.ServicePublicURL.GetString()
@@ -41,7 +41,7 @@ func GetMailDomain() string {
 		return hostname
 	}
 	if log.IsInitialized() {
-		log.Warningf("Could not determine mail domain from public URL or hostname, falling back to %q", "vikunja")
+		log.Warningf("Could not determine mail domain from public URL or hostname, falling back to %q", "doinow")
 	}
-	return "vikunja"
+	return "doinow"
 }

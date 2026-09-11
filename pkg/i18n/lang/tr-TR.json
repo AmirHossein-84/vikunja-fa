@@ -2,31 +2,31 @@
 	"notifications": {
 		"greeting": "Merhaba %[1]s,",
 		"email_confirm": {
-			"subject": "%[1]s, lütfen Vikunja'daki e-posta adresinizi doğrulayın",
-			"subject_new": "%[1]s + Vikunja = <3",
-			"welcome": "Vikunja'ya hoş geldiniz!",
+			"subject": "%[1]s, lütfen DoiNow'daki e-posta adresinizi doğrulayın",
+			"subject_new": "%[1]s + DoiNow = <3",
+			"welcome": "DoiNow'ya hoş geldiniz!",
 			"confirm": "E-posta adresinizi doğrulamak için aşağıdaki bağlantıya tıklayın:"
 		},
 		"password": {
 			"changed": {
-				"subject": "Vikunja'daki şifreniz değiştirildi",
+				"subject": "DoiNow'daki şifreniz değiştirildi",
 				"success": "Hesap şifreniz başarıyla değiştirildi.",
 				"warning": "Eğer bu siz değilseniz, hesabınızın güvenliği tehlikeye girmiş olabilir. Bu durumda sunucu yöneticinizle iletişime geçin."
 			},
 			"reset": {
-				"subject": "Vikunja'daki şifrenizi sıfırlayın",
+				"subject": "DoiNow'daki şifrenizi sıfırlayın",
 				"instructions": "Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın:",
 				"valid_duration": "Bu bağlantı 24 saat boyunca geçerli olacaktır."
 			}
 		},
 		"totp": {
 			"invalid": {
-				"subject": "Birisi Vikunja hesabınıza giriş yapmaya çalıştı ama başarısız oldu",
+				"subject": "Birisi DoiNow hesabınıza giriş yapmaya çalıştı ama başarısız oldu",
 				"message": "Birisi hesabınıza doğru kullanıcı adı ve şifreyle giriş yapmaya çalıştı, ancak yanlış bir TOTP kodu girdi.",
 				"warning": "**Eğer bu siz değilseniz, bir başkası şifrenizi biliyor olabilir. Hemen yeni bir şifre belirlemelisiniz!**"
 			},
 			"account_locked": {
-				"subject": "Vikunja'daki hesabınızı devre dışı bıraktık",
+				"subject": "DoiNow'daki hesabınızı devre dışı bıraktık",
 				"message": "Birisi kimlik bilgilerinizle giriş yapmaya çalıştı ancak geçerli bir TOTP kodu sağlayamadı.",
 				"disabled": "10 başarısız denemenin ardından hesabınızı devre dışı bıraktık ve şifrenizi sıfırladık. Yeni bir şifre belirlemek için size az önce gönderdiğimiz sıfırlama e-postasındaki talimatları izleyin.",
 				"reset_instructions": "Eğer sıfırlama talimatlarının bulunduğu bir e-posta almadıysanız, her zaman [%[1]s](%[2]s) adresinden yeni bir tane talep edebilirsiniz."
@@ -34,7 +34,7 @@
 		},
 		"login": {
 			"failed": {
-				"subject": "Birisi Vikunja hesabınıza giriş yapmaya çalıştı ama yanlış şifre nedeniyle başarısız oldu",
+				"subject": "Birisi DoiNow hesabınıza giriş yapmaya çalıştı ama yanlış şifre nedeniyle başarısız oldu",
 				"message": "Birisi hesabınıza art arda üç kez yanlış şifreyle giriş yapmaya çalıştı.",
 				"warning": "Eğer bu siz değilseniz, bu bir başkasının hesabınıza girmeye çalıştığı anlamına gelebilir.",
 				"enhance_security": "Hesabınızın güvenliğini artırmak için daha güçlü bir şifre belirlemeyi veya ayarlar bölümünden TOTP kimlik doğrulamasını etkinleştirmeyi düşünebilirsiniz:"
@@ -43,7 +43,7 @@
 		"account": {
 			"deletion": {
 				"confirm": {
-					"subject": "Vikunja hesabınızın silinmesini lütfen onaylayın",
+					"subject": "DoiNow hesabınızın silinmesini lütfen onaylayın",
 					"request": "Hesabınızın silinmesini talep ettiniz. Bunu onaylamak için lütfen aşağıdaki bağlantıya tıklayın:",
 					"valid_duration": "Bu bağlantı 24 saat boyunca geçerli olacaktır.",
 					"schedule_info": "Silme işlemini onayladığınızda, hesabınızın silinmesini üç gün sonrasına planlayacağız ve bu süre zarfında size başka bir e-posta göndereceğiz.",
@@ -51,16 +51,16 @@
 					"changed_mind": "Eğer silme talebinde bulunmadıysanız veya fikrinizi değiştirdiyseniz, bu e-postayı yok sayabilirsiniz."
 				},
 				"scheduled": {
-					"subject_days": "Vikunja hesabınız %[1]s gün içinde silinecek",
-					"subject_tomorrow": "Vikunja hesabınız yarın silinecek",
-					"request_reminder": "Yakın zamanda Vikunja hesabınızın silinmesini talep ettiniz.",
+					"subject_days": "DoiNow hesabınız %[1]s gün içinde silinecek",
+					"subject_tomorrow": "DoiNow hesabınız yarın silinecek",
+					"request_reminder": "Yakın zamanda DoiNow hesabınızın silinmesini talep ettiniz.",
 					"deletion_time_days": "Hesabınızı %[1]s gün içinde sileceğiz.",
 					"deletion_time_tomorrow": "Hesabınızı yarın sileceğiz.",
 					"changed_mind": "Eğer fikrinizi değiştirdiyseniz, silme işlemini iptal etmek için aşağıdaki bağlantıya tıklayın ve oradaki talimatları izleyin:"
 				},
 				"completed": {
-					"subject": "Vikunja hesabınız silindi",
-					"confirmation": "Talebiniz üzerine Vikunja hesabınızı sildik.",
+					"subject": "DoiNow hesabınız silindi",
+					"confirmation": "Talebiniz üzerine DoiNow hesabınızı sildik.",
 					"permanent": "Bu silme işlemi kalıcıdır. Eğer bir yedek oluşturmadıysanız ve verilerinize şimdi ihtiyacınız varsa, yöneticinizle iletişime geçin."
 				}
 			}
@@ -97,29 +97,29 @@
 		},
 		"team": {
 			"member_added": {
-				"subject": "%[1]s sizi Vikunja'daki \"%[2]s\" takımına ekledi",
-				"message": "%[1]s sizi Vikunja'daki %[2]s ekibine ekledi."
+				"subject": "%[1]s sizi DoiNow'daki \"%[2]s\" takımına ekledi",
+				"message": "%[1]s sizi DoiNow'daki %[2]s ekibine ekledi."
 			}
 		},
 		"data_export": {
 			"ready": {
-				"subject": "Vikunja veri dışa aktarmanız hazır",
-				"message": "Vikunja veri dışa aktarmanız indirilmeye hazır. Aşağıdaki düğmeye tıklayarak indirebilirsiniz:",
+				"subject": "DoiNow veri dışa aktarmanız hazır",
+				"message": "DoiNow veri dışa aktarmanız indirilmeye hazır. Aşağıdaki düğmeye tıklayarak indirebilirsiniz:",
 				"availability": "İndirme bağlantısı önümüzdeki 7 gün boyunca geçerli olacaktır."
 			}
 		},
 		"migration": {
 			"done": {
-				"subject": "%[1]s uygulamasından Vikunja'ya geçiş tamamlandı",
-				"imported": "Vikunja, erişiminiz olan tüm listeleri/projeleri, görevleri, notları, hatırlatıcıları ve dosyaları %[1]s uygulamasından içe aktardı.",
+				"subject": "%[1]s uygulamasından DoiNow'ya geçiş tamamlandı",
+				"imported": "DoiNow, erişiminiz olan tüm listeleri/projeleri, görevleri, notları, hatırlatıcıları ve dosyaları %[1]s uygulamasından içe aktardı.",
 				"have_fun": "Yeni (eski) projelerinizle keyifli vakit geçirin!"
 			},
 			"failed": {
-				"subject": "%[1]s uygulamasından Vikunja'ya geçiş başarısız oldu",
+				"subject": "%[1]s uygulamasından DoiNow'ya geçiş başarısız oldu",
 				"message": "Görünüşe göre %[1]s uygulamasından geçiş bu sefer planlandığı gibi gitmedi.",
 				"retry": "Endişelenmeyin! Daha önce yaptığınız gibi yeniden başlatarak bir kez daha deneyebilirsiniz. Bazen bu aksaklıklar %[1]s tarafındaki sorunlardan kaynaklanıyor, ancak tekrar denemek genellikle sorunu çözer.",
 				"error": "Yolda küçük bir hatayla karşılaştık: `%[2]s`.",
-				"report": "Lütfen bu durumu [forumda](https://community.vikunja.io/) veya her zamanki iletişim kanallarından bize bildirin, böylece neden başarısız olduğunu inceleyebiliriz.",
+				"report": "Lütfen bu durumu [forumda](https://community.doinow.ir/) veya her zamanki iletişim kanallarından bize bildirin, böylece neden başarısız olduğunu inceleyebiliriz.",
 				"working_on_it": "Hata mesajını takip ediyoruz ve en kısa sürede çözmek için çalışıyoruz."
 			}
 		},
@@ -127,7 +127,7 @@
 			"have_nice_day": "İyi günler dileriz!",
 			"copy_url": "Yukarıdaki düğme çalışmazsa, aşağıdaki URL'yi kopyalayıp tarayıcınızın adres çubuğuna yapıştırın:",
 			"actions": {
-				"open_vikunja": "Vikunja'yı Aç",
+				"open_DoiNow": "DoiNow'yı Aç",
 				"open_project": "Projeyi Aç",
 				"open_team": "Takımı Aç",
 				"download": "İndir",

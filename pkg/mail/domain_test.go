@@ -29,7 +29,7 @@ func TestGetMailDomain(t *testing.T) {
 		config.ServicePublicURL.Set("")
 		expectedHostname, err := os.Hostname()
 		if err != nil || expectedHostname == "" {
-			assert.Equal(t, "vikunja", GetMailDomain())
+			assert.Equal(t, "doinow", GetMailDomain())
 		} else {
 			assert.Equal(t, expectedHostname, GetMailDomain())
 		}
@@ -49,7 +49,7 @@ func TestGetMailDomain(t *testing.T) {
 		config.ServicePublicURL.Set("://bad")
 		expectedHostname, err := os.Hostname()
 		if err != nil || expectedHostname == "" {
-			assert.Equal(t, "vikunja", GetMailDomain())
+			assert.Equal(t, "doinow", GetMailDomain())
 		} else {
 			assert.Equal(t, expectedHostname, GetMailDomain())
 		}
