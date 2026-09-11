@@ -35,7 +35,7 @@
 				:show-even-number-of-projects="true"
 			/>
 		</div>
-		<ShowTasks
+		<HomeTaskGroups
 			v-if="projectStore.hasProjects"
 			:key="showTasksKey"
 			:label-ids="labelIds"
@@ -51,7 +51,7 @@ import {ref, computed} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 
 import Message from '@/components/misc/Message.vue'
-import ShowTasks from '@/views/tasks/ShowTasks.vue'
+import HomeTaskGroups from '@/components/home/HomeTaskGroups.vue'
 import ProjectCardGrid from '@/components/project/partials/ProjectCardGrid.vue'
 import AddTask from '@/components/tasks/AddTask.vue'
 import ImportHint from '@/components/home/ImportHint.vue'
