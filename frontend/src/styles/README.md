@@ -14,7 +14,7 @@ the bottom.
 styles/
 ├── common-imports.scss     SCSS variables/mixins auto-injected into every .scss/.vue <style lang="scss">
 ├── global.scss             Entry point: pulls in Bulma partials + theme + components + tokens
-├── fonts.scss              @font-face declarations for Quicksand and Open Sans
+├── fonts.scss              @font-face declarations for Vazirmatn, Quicksand and Open Sans
 ├── transitions.scss        Vue <Transition> classes (fade, width)
 ├── tailwind.css            Tailwind v4 entry (utilities only, `tw` prefix)
 │

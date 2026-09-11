@@ -185,6 +185,11 @@ echo "\nQuicksand"
 
 instance_and_subset "${ORIGINAL_FONTS}/Quicksand[wght].ttf" "wght=400:700"
 
+echo "\nVazirmatn"
+# keep the full variable weight range
+
+instance_and_subset "${ORIGINAL_FONTS}/Vazirmatn[wght].ttf" "wght=100:900" "Vazirmatn[wght]"
+
 echo "\nSubsetting files complete"
 
 echo ""
@@ -239,6 +244,9 @@ for file in $FONT_FOLDER/*.woff2; do
                 ;;
             Quicksand\[wght\]_*.woff2)
                 update_font_reference "Quicksand\[wght\]" "$basename"
+                ;;
+            Vazirmatn\[wght\]_*.woff2)
+                update_font_reference "Vazirmatn\[wght\]" "$basename"
                 ;;
         esac
     fi

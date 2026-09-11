@@ -19,6 +19,7 @@ FONT_URLS=(
 "https://github.com/googlefonts/opensans/blob/27d060e1aad6886daeda67629ee28189f795f534/fonts/variable/OpenSans%5Bwdth%2Cwght%5D.ttf?raw=true"
 "https://github.com/googlefonts/opensans/blob/27d060e1aad6886daeda67629ee28189f795f534/fonts/variable/OpenSans-Italic%5Bwdth%2Cwght%5D.ttf?raw=true"
 "https://github.com/andrew-paglinawan/QuicksandFamily/blob/db6de44878582966f45a0debaef10d57108d93a7/fonts/Quicksand%5Bwght%5D.ttf?raw=true"
+"https://raw.githubusercontent.com/rastikerdar/vazirmatn/master/fonts/variable/Vazirmatn%5Bwght%5D.ttf"
 )
 
 
